@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light"> <!-- Default theme is light -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝐀𝐑𝐒𝐋𝐀𝐍 𝐄𝐃𝐈𝐓𝐎𝐑 Database </title>
+  
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- CSS Styles -->
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --text-light: #555;
+            --border-color: #e0e0e0;
+            
+            --primary-blue: #0052D4;
+            --primary-blue-light: #65C7F7;
+            --success-green: #00B09B;
+            --alert-red: #D31027;
+            --secondary-orange: #FF8C00;
+            --whatsapp-green: #25D366;
+
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px;
+            --transition: all 0.3s ease-in-out;
+        }
+        
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-light: #a0a0a0;
+            --border-color: #333;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            transition: var(--transition);
+        }
+
+        .container { max-width: 850px; margin: 0 auto; padding: 0 20px; }
+
+        .main-header {
+            background: linear-gradient(45deg, var(--primary-blue), var(--primary-blue-light));
+            color: white; padding: 2.5rem 0; text-align: center; position: relative;
+        }
+        .main-header h1 { font-size: 2.5rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 15px; }
+        .main-header p { opacity: 0.9; font-size: 1.1rem; }
+        .main-footer { text-align: center; padding: 2rem 0; margin-top: 2rem; color: var(--text-light); font-size: 0.9rem; }
+        
+        #theme-toggle {
+            position: absolute; top: 20px; right: 20px; background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3); color: white; width: 45px; height: 45px;
+            border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; transition: var(--transition);
+        }
+        #theme-toggle:hover { background: rgba(255, 255, 255, 0.3); }
+
+        main { padding: 2.5rem 0; }
+        .card {
+            background-color: var(--card-bg); border-radius: var(--border-radius); padding: 2.5rem;
+            box-shadow: var(--shadow); margin-bottom: 2rem; border: 1px solid var(--border-color);
+            transition: var(--transition); position: relative;
+        }
+
+        .search-card h2 { text-align: center; margin-bottom: 1.5rem; font-weight: 600; }
+        .form-group { position: relative; }
+        #phone-number {
+            width: 100%; padding: 15px 20px 15px 50px; border: 2px solid var(--border-color);
+            border-radius: 8px; font-size: 1.1rem; font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color); color: var(--text-color); transition: var(--transition);
+        }
+        #phone-number:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(0, 82, 212, 0.15); }
+        .form-group .icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 1.4rem; color: #aaa; transition: var(--transition); }
+        #phone-number:focus + .icon { color: var(--primary-blue); }
+
+        #search-button {
+            display: flex; justify-content: center; align-items: center; gap: 10px; width: 100%;
+            padding: 15px 20px; background: linear-gradient(45deg, var(--primary-blue), #4A90E2); color: white;
+            font-size: 1.2rem; font-weight: 600; border: none; border-radius: 8px; cursor: pointer;
+            transition: var(--transition); margin-top: 1.5rem;
+        }
+        #search-button:hover:not(:disabled) { box-shadow: 0 8px 25px rgba(0, 82, 212, 0.3); transform: translateY(-3px); }
+        #search-button:disabled { background: #999; cursor: not-allowed; }
+
+        #results-container .card, #results-container .alert { opacity: 0; transform: translateY(20px); animation: fadeIn 0.5s forwards ease-out; }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        .alert { display: flex; align-items: center; gap: 15px; padding: 1.5rem; border-radius: 8px; font-weight: 500; font-size: 1.1rem; }
+        .alert i { font-size: 1.5rem; }
+        .alert-danger { background-color: rgba(211, 16, 39, 0.1); color: var(--alert-red); border: 1px solid var(--alert-red); }
+        .alert-info { background-color: rgba(0, 82, 212, 0.1); color: var(--primary-blue); border: 1px solid var(--primary-blue); }
+
+        .results-summary { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; text-align: center; opacity: 0; animation: fadeIn 0.5s 0.2s forwards; }
+        .result-card { border-left: 5px solid var(--success-green); transition: var(--transition); }
+        .result-card:hover { transform: scale(1.02); box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
+        .result-card + .result-card { margin-top: 1.5rem; }
+        .result-card-header { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
+        .result-card-header-info { display: flex; align-items: center; gap: 15px; }
+        .result-card-header i { font-size: 2.5rem; color: var(--primary-blue); }
+        .result-card-header h3 { font-size: 1.4rem; font-weight: 600; margin: 0; }
+        .result-details { list-style: none; padding: 0; }
+        .result-details li { display: flex; align-items: flex-start; gap: 15px; padding: 0.75rem 0; font-size: 1rem; }
+        .result-details li + li { border-top: 1px dashed #eee; }
+        [data-theme="dark"] .result-details li + li { border-top-color: var(--border-color); }
+        .result-details i { font-size: 1.2rem; color: var(--secondary-orange); margin-top: 4px; width: 20px; text-align: center; }
+        .result-details strong { font-weight: 600; color: var(--text-light); min-width: 100px; }
+        .result-details span { word-break: break-word; }
+        .network-info { display: flex; align-items: center; gap: 8px; }
+        .network-logo { width: 24px; height: 24px; }
+        .text-success { color: var(--success-green) !important; }
+        .text-danger { color: var(--alert-red) !important; }
+
+        .copy-btn {
+            position: absolute; top: 20px; right: 20px; background: var(--bg-color);
+            border: 1px solid var(--border-color); color: var(--text-light);
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: var(--transition);
+        }
+        .copy-btn:hover { background-color: var(--primary-blue); color: white; }
+        .copy-btn.copied { background-color: var(--success-green); color: white; }
+
+        .source-badge { font-size: 0.75rem; font-weight: 600; padding: 4px 8px; border-radius: 20px; color: white; text-transform: uppercase; }
+        .source-cache { background-color: var(--success-green); }
+        .source-upstream { background-color: var(--secondary-orange); }
+
+        #history-container { display: none; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer; transition: var(--transition); }
+        .history-item + .history-item { margin-top: 0.75rem; }
+        .history-item:hover { background-color: var(--bg-color); border-color: var(--primary-blue); }
+        .history-item .info span { display: block; }
+        .history-item .info .name { font-weight: 600; color: var(--text-color); }
+        .history-item .info .number { font-size: 0.9rem; color: var(--text-light); }
+        .history-item .action-icon i { font-size: 1.2rem; color: var(--text-light); }
+        #clear-history { display: block; margin: 1.5rem auto 0; background: none; border: none; color: var(--alert-red); font-weight: 500; cursor: pointer; font-size: 0.9rem; }
+        
+        .loader { border: 4px solid var(--bg-color); border-top: 4px solid var(--primary-blue); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 3rem auto; }
+        .button-loader { width: 22px; height: 22px; border-width: 3px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <h1><i class="bi bi-sim-fill"></i>𝐀𝐑𝐒𝐋𝐀𝐍 𝐄𝐃𝐈𝐓𝐎𝐑 SIM Database</h1>
+            <p>Your Modern Portal for Telecom Information</p>
+        </div>
+        <button id="theme-toggle" title="Toggle Theme"><i class="bi bi-moon-stars-fill"></i></button>
+    </header>
+
+    <main class="container">
+        <!-- Search Card -->
+        <div class="card search-card">
+            <h2><i class="bi bi-search"></i> Find SIM Details</h2>
+            <form id="search-form">
+                <div class="form-group">
+                    <input type="text" id="phone-number" placeholder="Enter number or CNIC..." required>
+                    <i class="bi bi-phone-fill icon"></i>
+                </div>
+                <button type="submit" id="search-button">
+                    <span class="button-text">Search</span>
+                    <div class="loader button-loader" style="display: none;"></div>
+                </button>
+            </form>
+        </div>
+
+        <!-- History Section -->
+        <div class="card" id="history-container">
+            <h2><i class="bi bi-clock-history"></i> Recent Searches</h2>
+            <div id="history-list"></div>
+            <button id="clear-history">Clear History</button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-container">
+            <div class="card alert alert-info">
+                <i class="bi bi-info-circle-fill"></i>
+                <span>Enter a number or CNIC above to begin your search. All results will appear here.</span>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2025 𝐀𝐑𝐒𝐋𝐀𝐍 𝐄𝐃𝐈𝐓𝐎𝐑 SIM Database Portal. All Rights Reserved.</p>
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const searchForm = document.getElementById('search-form');
+            const phoneNumberInput = document.getElementById('phone-number');
+            const searchButton = document.getElementById('search-button');
+            const buttonText = document.querySelector('.button-text');
+            const buttonLoader = document.querySelector('.button-loader');
+            const resultsContainer = document.getElementById('results-container');
+            const historyContainer = document.getElementById('history-container');
+            const historyList = document.getElementById('history-list');
+            const clearHistoryBtn = document.getElementById('clear-history');
+
+            const API_BASE_URL = 'https://sim.f-a-k.workers.dev/';
+            let searchHistory = [];
+            let currentApiResponse = {}; // Store the full API response
+
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme) {
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                themeToggleBtn.innerHTML = currentTheme === 'dark' ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-stars-fill"></i>';
+            }
+            themeToggleBtn.addEventListener('click', () => {
+                const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                themeToggleBtn.innerHTML = theme === 'dark' ? '<i class="bi bi-sun-fill"></i>' : '<i class="bi bi-moon-stars-fill"></i>';
+            });
+
+            const loadHistory = () => {
+                const storedHistory = localStorage.getItem('searchHistory');
+                if (storedHistory) {
+                    searchHistory = JSON.parse(storedHistory);
+                    renderHistory();
+                }
+            };
+            const saveHistory = (apiResponse) => {
+                const query = apiResponse.query;
+                const existingIndex = searchHistory.findIndex(item => item.query === query);
+                if (existingIndex > -1) searchHistory.splice(existingIndex, 1);
+                searchHistory.unshift(apiResponse);
+                if (searchHistory.length > 10) searchHistory.pop();
+                localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+                renderHistory();
+            };
+            const renderHistory = () => {
+                if (searchHistory.length === 0) {
+                    historyContainer.style.display = 'none';
+                    return;
+                }
+                historyContainer.style.display = 'block';
+                historyList.innerHTML = searchHistory.map((item, index) => `
+                    <div class="history-item" data-history-index="${index}">
+                        <div class="info">
+                            <span class="name">${item.data[0]?.name || 'Unknown Name'}</span>
+                            <span class="number">${item.query}</span>
+                        </div>
+                        <div class="action-icon"><i class="bi bi-chevron-right"></i></div>
+                    </div>`).join('');
+            };
+            historyList.addEventListener('click', (e) => {
+                const historyItem = e.target.closest('.history-item');
+                if (historyItem) {
+                    const index = historyItem.getAttribute('data-history-index');
+                    const selectedRecord = searchHistory[index];
+                    phoneNumberInput.value = selectedRecord.query;
+                    displayResults(selectedRecord, true);
+                    resultsContainer.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+            clearHistoryBtn.addEventListener('click', () => {
+                searchHistory = [];
+                localStorage.removeItem('searchHistory');
+                renderHistory();
+            });
+
+            searchForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const query = phoneNumberInput.value.trim();
+                if (query.length < 10) {
+                    displayError('Invalid format. Please enter a valid number or CNIC.');
+                    return;
+                }
+                setLoadingState(true);
+                try {
+                    const response = await fetch(`${API_BASE_URL}?q=${query}`);
+                    if (!response.ok) throw new Error(`Network response error: ${response.status}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                         if (data.query_type === 'cnic_notice') {
+                            displayCnicNotice(data.message, data.whatsapp_channel);
+                        } else if (data.data && data.data.length > 0) {
+                            displayResults(data);
+                        } else {
+                           displayError('No records found for this query.');
+                        }
+                    } else {
+                        displayError(data.error || 'An unknown error occurred.');
+                    }
+                } catch (error) {
+                    console.error('Fetch Error:', error);
+                    displayError('Failed to connect. Check your internet connection.');
+                } finally {
+                    setLoadingState(false);
+                }
+            });
+
+            const setLoadingState = (isLoading) => {
+                phoneNumberInput.disabled = isLoading;
+                searchButton.disabled = isLoading;
+                if (isLoading) {
+                    buttonText.style.display = 'none';
+                    buttonLoader.style.display = 'block';
+                    resultsContainer.innerHTML = '<div class="loader"></div>';
+                } else {
+                    buttonText.style.display = 'inline';
+                    buttonLoader.style.display = 'none';
+                }
+            };
+            const displayError = (message) => {
+                resultsContainer.innerHTML = `<div class="card alert alert-danger"><i class="bi bi-x-circle-fill"></i><span><strong>Error:</strong> ${message}</span></div>`;
+            };
+
+            const displayCnicNotice = (message, channelLink) => {
+                resultsContainer.innerHTML = `
+                    <div class="card alert alert-info text-center">
+                        <i class="bi bi-whatsapp" style="font-size: 3rem; color: var(--whatsapp-green);"></i>
+                        <h4 class="mt-3 fw-bold">${message}</h4>
+                        <p class="mb-3 text-muted">Get the latest updates by joining our official channel.</p>
+                        <a href="${channelLink}" target="_blank" class="btn btn-lg fw-bold" style="background-color: var(--whatsapp-green); color: white; border: none;">
+                            <i class="bi bi-whatsapp"></i> Join WhatsApp Channel
+                        </a>
+                    </div>
+                `;
+            };
+
+            const formatDate = (isoString) => {
+                if (!isoString) return 'N/A';
+                try {
+                    return new Date(isoString).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric'
+                    });
+                } catch (e) {
+                    return 'Invalid Date';
+                }
+            };
+
+            const displayResults = (apiData, fromHistory = false) => {
+                currentApiResponse = apiData;
+                const records = apiData.data;
+
+                if (!fromHistory) {
+                    saveHistory(apiData);
+                }
+
+                let resultsHTML = `<h2 class="results-summary">${apiData.summary_text || `Found ${records.length} record(s)`}</h2>`;
+                
+                resultsHTML += records.map((record, index) => `
+                    <div class="card result-card">
+                        <button class="copy-btn" data-record-index="${index}" title="Copy Details"><i class="bi bi-clipboard"></i></button>
+                        <div class="result-card-header">
+                            <div class="result-card-header-info">
+                                <i class="bi bi-person-circle"></i><h3>${record.name || 'N/A'}</h3>
+                            </div>
+                            <span class="source-badge source-${apiData.source}">${apiData.source || 'N/A'}</span>
+                        </div>
+                        <ul class="result-details">
+                            <li><i class="bi bi-telephone-fill"></i><strong>Number:</strong><span>${record.number || 'N/A'}</span></li>
+                            <li><i class="bi bi-person-vcard-fill"></i><strong>CNIC:</strong><span>${record.cnic || 'N/A'}</span></li>
+                            <li><i class="bi bi-geo-alt-fill"></i><strong>Address:</strong><span>${record.address || 'N/A'}</span></li>
+                            <li><i class="bi bi-reception-4"></i><strong>Network:</strong>
+                                <span class="network-info">
+                                    ${record.network_logo ? `<img src="${record.network_logo}" alt="network logo" class="network-logo">` : ''}
+                                    ${record.network || record.network_code || 'N/A'}
+                                </span>
+                            </li>
+                            <li><i class="bi bi-power"></i><strong>Status:</strong>
+                                <span>${record.is_active ? '<span class="text-success fw-bold">Active</span>' : '<span class="text-danger fw-bold">Inactive</span>'}</span>
+                            </li>
+                             <li><i class="bi bi-calendar-plus"></i><strong>First Seen:</strong><span>${formatDate(record.first_seen)}</span></li>
+                            <li><i class="bi bi-calendar-check"></i><strong>Last Seen:</strong><span>${formatDate(record.last_seen)}</span></li>
+                        </ul>
+                    </div>`).join('');
+                resultsContainer.innerHTML = resultsHTML;
+            };
+
+            resultsContainer.addEventListener('click', (e) => {
+                const copyBtn = e.target.closest('.copy-btn');
+                if (copyBtn) {
+                    const index = parseInt(copyBtn.dataset.recordIndex, 10);
+                    const record = currentApiResponse.data[index];
+                    if (!record) return;
+
+                    const textToCopy = `
+--- FAK Database Result ---
+Name: ${record.name || 'N/A'}
+Number: ${record.number || 'N/A'}
+CNIC: ${record.cnic || 'N/A'}
+Address: ${record.address || 'N/A'}
+Network: ${record.network || record.network_code || 'N/A'}
+Status: ${record.is_active ? 'Active' : 'Inactive'}
+First Seen: ${formatDate(record.first_seen)}
+Last Seen: ${formatDate(record.last_seen)}
+Source: ${currentApiResponse.source || 'N/A'}
+--- Copied via DARK-TECH-ZONE ---
+                    `.trim();
+
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        copyBtn.innerHTML = '<i class="bi bi-check-lg"></i>';
+                        copyBtn.classList.add('copied');
+                        setTimeout(() => {
+                            copyBtn.innerHTML = '<i class="bi bi-clipboard"></i>';
+                            copyBtn.classList.remove('copied');
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                        alert('Failed to copy details.');
+                    });
+                }
+            });
+
+            loadHistory();
+        });
+    </script>
+</body>
+</html>
